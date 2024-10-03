@@ -27,9 +27,10 @@ public class SP_Matrix {
             int[] curr = queue.poll();
             //如果X坐标= n-1 ;Y 坐标= n-1;那就返回当前值
             if(curr[0] == grid.length-1 && curr[1] == grid[0].length-1){
+                //在这里再把开头的元素算上。
                 return curr[2]+1;
             }
-
+            //当queue不为0时，把它周围的每一个可能的box都加上
             for(int i = 0; i<dirs.length; i++){
                 int x = curr[0]+dirs[i][0];
                 int y = curr[1]+dirs[i][1];
