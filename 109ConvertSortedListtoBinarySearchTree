@@ -1,0 +1,66 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    //和108相反，这个是链表版本，
+    //主要在找middle的方式上不同，这里用helper function先找到mid之前的一个元素，再在这里找mid
+    //找mid左右边界也不同。这里要注意，head传进来就代表链表的开头，所以找左边的边界需要传入同样的head，但是要提前从mid的前一个元素断开
+    //同理找右边的边界，只需要传入middle.next 
+    //同时要注意base case有两个
+    public TreeNode sortedListToBST(ListNode head) {
+        if(head == null){
+            return null; // Base case: empty list
+        }
+        if(head.next == null){
+            return new TreeNode (head.val); // Base case:  list with only one elements
+        }
+        ListNode preMid = findPreMid( head);// Find the node before the middle node
+        ListNode mid = preMid.next;
+        preMid.next = null; //断开链表 !! 断开的方法就是.next = null
+        TreeNode t = new TreeNode(mid.val);//在当前middle node 这里创建新的root node
+
+        //这里为什么传入head.
+        //head 代表列表的第一个元素，因为前面preMid.next = null;所以这时列表就已经是【head, ... preMid】已经是之前列表的前半部分了
+        t.left = sortedListToBST(head);//Recursively build the left subtree from the left half of the list
+        //这里为什么传入mid.next
+        //前面我们用mid记住了当前列表的middle node，所以，这时mid.next代表的就是当前middle node的后面一个元素，所以这时列表就已经是【mid.next, ... 列表结尾】已经是之前列表的后半部分了
+        t.right = sortedListToBST(mid.next);// Recursively build the right subtree from the right half of the list
+        return t;
+    }
+
+
+    //这个是双指针寻找链表pre middle element 的方法，慢的一次走一步，快的一次走两步，当快的到达链表结尾，慢的就是middle
+    private ListNode findPreMid(ListNode head){
+        ListNode slow = head;
+        ListNode fast = head.next;
+        ListNode pre = head;
+        while(fast!= null && fast.next!= null){
+            pre = slow;// 注意， pre node just before the middle node。
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return pre;
+    }
+}
