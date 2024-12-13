@@ -18,7 +18,7 @@ public class Main {
         return newHead;
     }
 
-////11
+////11c
     public static void printList(ListNode node) {
         while (node != null) {
             System.out.print(node.val + " ");
